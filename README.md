@@ -37,7 +37,7 @@ The detailed test cases are available in:
 Each test case includes: Test Case ID, Test Description, Preconditions, Test Data, Test Steps, Expected Results, Priority, Actual Result, and Status.
 
 #### Test Case Coverage
-A total of 17 test cases (TC-001 to TC-017) have been created covering both valid and invalid inputs, along with error handling and boundary conditions.
+A total of 20 test cases (TC-001 to TC-020) have been created covering both valid and invalid inputs, along with error handling and boundary conditions. 18 passed and 2 failed; the failed cases (TC-018 and TC-019) are recorded in `test-cases.md`.
 
 #### Repository Contents
 
