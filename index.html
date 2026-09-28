@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple Calculator</title>
+<style>
+  :root { --bg:#f3f5f7; --card:#ffffff; --ink:#1d2733; --muted:#5b6b7c; --line:#cfd8e0; --accent:#1f5fbf; --error:#b3261e; --ok:#1b6e3c; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161b22; --card:#1f262f; --ink:#e8edf2; --muted:#9aa8b6; --line:#37424f; --accent:#6ea8fe; --error:#ff8a80; --ok:#7ddc9c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px;
+         background:var(--bg); color:var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { width:100%; max-width:380px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:24px; }
+  h1 { font-size:1.25rem; margin:0 0 4px; }
+  p.sub { margin:0 0 20px; color:var(--muted); font-size:.9rem; }
+  label { display:block; font-size:.9rem; margin:0 0 4px; }
+  input, select { width:100%; font-size:1rem; padding:10px 12px; margin-bottom:14px; color:var(--ink); background:var(--card);
+                  border:1px solid var(--line); border-radius:8px; }
+  input:focus, select:focus, button:focus-visible { outline:3px solid var(--accent); outline-offset:1px; }
+  .row { display:flex; gap:10px; }
+  button { flex:1; font-size:1rem; padding:10px 12px; border-radius:8px; border:1px solid var(--accent); cursor:pointer; }
+  #calculate { background:var(--accent); color:#fff; }
+  #clear { background:transparent; color:var(--accent); }
+  #message { min-height:1.5rem; margin:18px 0 0; font-size:1.05rem; font-weight:600; }
+  #message.error { color:var(--error); }
+  #message.result { color:var(--ok); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Simple Calculator</h1>
+  <p class="sub">Add, subtract, multiply or divide two numbers.</p>
+
+  <label for="num1">First number</label>
+  <input id="num1" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 10">
+
+  <label for="num2">Second number</label>
+  <input id="num2" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 5">
+
+  <label for="operation">Operation</label>
+  <select id="operation">
+    <option value="add">Addition (+)</option>
+    <option value="subtract">Subtraction (-)</option>
+    <option value="multiply">Multiplication (×)</option>
+    <option value="divide">Division (÷)</option>
+  </select>
+
+  <div class="row">
+    <button id="calculate" type="button">Calculate</button>
+    <button id="clear" type="button">Clear</button>
+  </div>
+
+  <p id="message" role="status" aria-live="polite"></p>
+</main>
+
+<script>
+  var num1 = document.getElementById('num1');
+  var num2 = document.getElementById('num2');
+  var op = document.getElementById('operation');
+  var msg = document.getElementById('message');
+  var NUMBER = /^-?\d+(\.\d+)?$/;
+
+  function show(text, type) { msg.textContent = text; msg.className = type; }
+
+  function calculate() {
+    var a = num1.value.trim(), b = num2.value.trim();
+    if (a === '' || b === '') { show('Please enter both numbers.', 'error'); return; }
+    if (!NUMBER.test(a) || !NUMBER.test(b)) { show('Please enter valid numbers only.', 'error'); return; }
+    a = parseFloat(a); b = parseFloat(b);
+    var r;
+    if (op.value === 'add') r = a + b;
+    else if (op.value === 'subtract') r = a - b;
+    else if (op.value === 'multiply') r = a * b;
+    else {
+      if (b === 0) { show('Cannot divide by zero.', 'error'); return; }
+      r = a / b;
+    }
+    if (!isFinite(r)) { show('Result is too large to display.', 'error'); return; }
+    show('Result: ' + parseFloat(r.toFixed(4)), 'result');
+  }
+
+  function clearAll() { num1.value = ''; num2.value = ''; op.value = 'add'; show('', ''); num1.focus(); }
+
+  document.getElementById('calculate').addEventListener('click', calculate);
+  document.getElementById('clear').addEventListener('click', clearAll);
+  [num1, num2].forEach(function (el) {
+    el.addEventListener('keydown', function (e) { if (e.key === 'Enter') calculate(); });
+  });
+</script>
+</body>
+</html>
